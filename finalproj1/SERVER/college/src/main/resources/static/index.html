@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Hello React!</title>
+  <script src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script> 
+</head>
+<body>
+    <div id="firstdiv"></div>
+    <script type="text/babel">
+class MyComponent extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        error: null,
+        isLoaded: false,
+        items: []
+      };
+    }
+  
+    componentDidMount() {
+      fetch("http://localhost:8080/collegeplayer")
+        .then(res => res.json())
+        .then(
+          (result) => {
+            this.setState({
+              isLoaded: true,
+              items: result
+            });
+          },
+          (error) => {
+            this.setState({
+              isLoaded: true,
+              error
+            });
+          }
+        )
+    }
+  
+    render() {
+      const { error, isLoaded, items } = this.state;
+      if (error) {
+        return <div>Error: {error.message}</div>;
+      } else if (!isLoaded) {
+        return <div>Loading...</div>;
+      } else {
+        return (
+          <table>
+            {items.map(item => (
+              <tr key={item.year}>
+                <td> {item.playerID} </td>
+                <td> {item.collegeID}</td>
+                <td> {item.year}</td>
+              </tr>
+
+
+            ))}
+          </table>
+        );
+      }
+
+    }
+  }
+  
+
+ ReactDOM.render(<MyComponent />, document.getElementById('firstdiv'));
+  </script>
+  </body>
+  </html>
